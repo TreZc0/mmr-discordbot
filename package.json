@@ -1,8 +1,30 @@
 {
+  "name": "mmr-discordbot",
+  "description": "Discord Bot for the MMR Discord featuring Twitch Stream detection and role management",
+  "main": "index.js",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TreZc0/mmr-discordbot.git"
+  },
+  "bugs": "https://github.com/TreZc0/mmr-discordbot/issues",
+  "homepage": "https://www.zeldaspeedruns.com/",
+  "license": "MIT",
+  "keywords": [
+    "discord",
+    "bot",
+    "twitch",
+    "role management",
+    "community handling",
+    "streambot"
+  ],
   "dependencies": {
     "discord.js": "12.5.3",
     "jsonfile": "^6.1.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6"
+  },
+  "engines": {
+    "node": ">=12.0.0"
   }
 }
