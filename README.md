@@ -1,6 +1,7 @@
-#MMR DiscordBot
+# MMR DiscordBot
 
 This is a simple Discord Bot for the MM Randomizer Discord, written in Node.JS.
+The twitch module is based off of [Dustforce Discord Bot](https://github.com/Joel4558/Dustforce-discord).
 
 ## Requirements
 * Node.js v12.0.0 or newer is required
