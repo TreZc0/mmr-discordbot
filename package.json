@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "discord.js": "12.5.3",
+    "jsonfile": "^6.1.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6"
+  }
+}

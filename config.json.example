@@ -1,0 +1,21 @@
+{
+  "discord-server-id": "<guild-id>",
+  "discord-role-channel-id": "<channel-id-for-role-management>",
+  "discord-notifications-channel-id": "<channel-id-for-stream-announcements>",
+  "discord-token": "<discord-bot-token>,
+  "discord-available-roles": [<list-of-roles-as-strings],
+  "bot-user-name": "<bot username>",
+  "bot-avatar-url": "<link to bot avatar image>",
+  "target-game-ids": [
+    <list-of-twitch-api-game-ids>
+  ],
+  "target-stream-tags": [
+     <list-of-twitch-api-tag-ids>
+  ],
+  "target-game-name": "<game-name-to-show-in-embed>",
+  "twitch-client-id": "<twitch-client-id>",
+  "twitch-client-secret": "<twitch-client-secret",
+  "twitch-refresh-token": "<twitch-refresh-token-initially-required>",
+  "twitch-access-token": "<twitch-acccess-token-initially-required>",
+  "twitch-access-token-expires-At": <js-date-ms-timestamp-default-0>
+}
