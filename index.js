@@ -210,16 +210,16 @@ twitch.on('messageStreamDeleted', (stream) => {
   //console.log (stream.url + " went offline");
 
   let channel = bot.guilds.cache.get(activeGuild).channels.cache.get(streamNotificationChannel);
-  channel.fetchMessages({
-      limit: 50
-    })
-    .then(messages => messages.forEach(message => {
-      if ((message.embeds) && (message.embeds.length > 0)) {
-        if (message.embeds[0].message.embeds[0].url == stream.url) {
-          message.delete();
+  channel.messages.fetch({ limit: 80 })
+    .then(messages => {
+      messages.forEach(message => {
+        if ((message.embeds) && (message.embeds.length > 0)) {
+          if (message.embeds[0].message.embeds[0].url == stream.url) {
+            message.delete();
+          }
         }
-      }
-    }))
+      })
+    })
     .catch((e) => {
       console.error(e);
     });
