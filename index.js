@@ -210,12 +210,17 @@ twitch.on('messageStreamDeleted', (stream) => {
   //console.log (stream.url + " went offline");
 
   let channel = bot.guilds.cache.get(activeGuild).channels.cache.get(streamNotificationChannel);
-  channel.messages.fetch({ limit: 80 })
+ /*channel.messages.fetch({ limit: 80 })
     .then(messages => {
-      messages.forEach(message => {
-        if ((message.embeds) && (message.embeds.length > 0)) {
-          if (message.embeds[0].message.embeds[0].url == stream.url) {
-            message.delete();
+      messages.forEach(message => */
+  channel.messages.fetch({ limit: 80}, true, true)
+    .then(messages => {
+      messages.each(msgObj => {
+        if (!msgObj)
+          return;
+        if ((msgObj.embeds) && (msgObj.embeds.length > 0)) {
+          if (msgObj.embeds[0].url == stream.url) {
+            msgObj.delete();
           }
         }
       })
@@ -271,7 +276,7 @@ function commitState() {
 }
 
 function escapeDiscordSpecials(inputString) {
-  return inputString.replace(/_/g, "\\_").replace(/\*/g, "\\*").replace(/~/g, "\\~");
+  return inputString.replace(/_/g, "\_").replace(/\*/g, "\\*").replace(/~/g, "\~");
 }
 
 
