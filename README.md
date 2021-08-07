@@ -10,10 +10,13 @@ The twitch module is based off of [Dustforce Discord Bot](https://github.com/Joe
 * Discord Bot Token
 
 ## Features
-* Automatic Stream announcements based on Twitch Game and Stream Tag Filters
+* Automatic Stream announcements based on Twitch game and stream tag filters
 * Role management - users can get or remove roles via reactions
 * Persistent configuration via state file
-* In this configuration, the bot can only serve a single Discord Guild.
+* Light Moderation tasks like deleting messages with banned file extensions (w/ logging and user notication via DM)
+
+## Important Note
+* In this configuration, the bot can only serve a single Discord guild.
 
 ## Configuration
 The repository contains an example file:
