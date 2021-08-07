@@ -20,8 +20,10 @@ The repository contains an example file:
 * "discord-server-id": The guild ID for the Discord server
 * "discord-role-channel-id": The channel ID of the channel used for role management
 * "discord-notifications-channel-id": THe channel ID of the channel used for stream announcements
+* "discord-logging-channel-id": THe channel ID of the channel used to log certain actions for staff
 * "discord-token": The Discord bot token
-* "discord-available-roles": String-Array of the role names to be offered by the bot,
+* "discord-available-roles": String-Array of the role names to be offered by the bot
+* "discord-banned-file-ext": String-Array of banned file extensions to delete and warn the user about (enter with ".")
 * "bot-user-name": The name the bot should display in its embeds
 * "bot-avatar-url": URL of the avatar the bot should display in its embeds
 * "target-game-ids": String-Array of the Twitch Game IDs the bot should listen for ([Games API Reference](https://dev.twitch.tv/docs/api/reference#get-games))

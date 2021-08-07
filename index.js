@@ -14,6 +14,8 @@ const discordToken = config["discord-token"];
 const activeGuild = config["discord-server-id"];
 const roleHandlingChannel = config["discord-role-channel-id"];
 const streamNotificationChannel = config["discord-notifications-channel-id"];
+const loggingChannel = config["discord-logging-channel-id"];
+const bannedFileExtensions = config["discord-banned-file-ext"];
 
 //Role Init
 const numToDiscordEmojis = {
@@ -230,9 +232,62 @@ twitch.on('messageStreamDeleted', (stream) => {
     });
 });
 
+//Discord Moderation
+function bannedAttachmentCheck(message) {
+
+  const author = message.author;
+  const attachmentCollection = message.attachments
+  let bannedAttachmentTypeFound = false;
+
+  attachmentCollection.each(att => {
+      bannedFileExtensions.forEach(ext => {
+        if (att.name.toLowerCase().endsWith(ext))
+          bannedAttachmentTypeFound = true;
+      });
+  });
+
+  if (bannedAttachmentTypeFound) {
+    let actionObj = {
+      user: author.username,
+      channel: {name: message.channel.name, id: message.channel.id},
+      offense: "Banned File Extension",
+      action: "Message Deletion",
+      messageObj: { id: message.id, content: message.content, att: attachmentCollection.map(val => val.name).join(", ")}
+    }
+    message.delete()    
+    .catch(ex => {
+        console.error(`Cannot delete message with banned ext from ${author.username} in ${message.channel.name}: ${ex}`);
+    });
+
+    let warningMsg = `Hey there, ${author.username}! \n You just sent a message containing a forbidden file in our discord. The message has been deleted automatically.\
+    \nPlease refrain from sending a file of the following types in the future: ${bannedFileExtensions.join(", ")}\
+    \nOur 'welcome' channel contains our server rules - please make sure to read them again and follow them to ensure every community member can have a good time.\
+    \n\nBest\n**Your moderation team**`
+
+    message.author.send(warningMsg)
+    .catch(ex => {
+        console.error(`Cannot send warning DM to user ${author.username} for sending banned file attachment: ${ex}`);
+    });
+
+
+    _logModerationAction(actionObj);
+    return true;
+
+  }
+  return false;
+}
+
 //Message Handler
 bot.on('message', message => {
   if (message.author.bot)
+    return;
+
+  let forbiddenMessageDeleted = false;
+  if (bannedFileExtensions.length > 0 && message.attachments.size > 0) {
+    forbiddenMessageDeleted = bannedAttachmentCheck(message);
+  }
+
+  if (forbiddenMessageDeleted)
     return;
 
   if (message.channel.id == roleHandlingChannel)
@@ -242,6 +297,58 @@ bot.on('message', message => {
 });
 
 //Discord Handler
+function _logModerationAction(actionObj) {
+  let channel = bot.guilds.cache.get(activeGuild).channels.cache.get(loggingChannel);
+
+  var postDate = JSON.parse(JSON.stringify(new Date()));
+
+  const embed = {
+    "title": "Bot Moderation Action: " + actionObj.action,
+    "description": "Reason: " + actionObj.offense,
+    "url": `https://discord.com/channels/${activeGuild}/${actionObj.channel.id}/${actionObj.messageObj.id}`,
+    "color": 13632027,
+    "timestamp": postDate,
+    "footer": {
+      "icon_url": config["bot-avatar-url"],
+      "text": config["bot-user-name"] + " - Auto Moderation"
+    },
+    "fields": [
+      {
+        "name": "User",
+        "value": actionObj.user,
+        "inline": true
+      },
+      {
+        "name": "Channel",
+        "value": actionObj.channel.name,
+        "inline": true
+      },
+      {
+        "name": "Original Message",
+        "value": actionObj.messageObj.content,
+        "inline": true
+      }
+    ],
+    "author": {
+      "name": config["bot-user-name"],
+      "icon_url": config["bot-avatar-url"]
+    }
+  };
+
+  if (actionObj.messageObj.att.length > 0) {
+    embed.fields.push({
+      "name": "Message Attachment(s)",
+      "value": actionObj.messageObj.att,
+      "inline": true
+    })
+  }
+
+  channel.send({embed}).catch((e) => {
+    console.error(e);
+  });
+}
+
+
 async function _clearChat(textChannelID) {
 
   let channel = bot.channels.cache.get(textChannelID);

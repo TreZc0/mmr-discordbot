@@ -2,7 +2,7 @@
   "name": "mmr-discordbot",
   "description": "Discord Bot for the MMR Discord featuring Twitch Stream detection and role management",
   "main": "index.js",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/TreZc0/mmr-discordbot.git"

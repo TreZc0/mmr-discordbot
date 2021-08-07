@@ -2,8 +2,10 @@
   "discord-server-id": "<guild-id>",
   "discord-role-channel-id": "<channel-id-for-role-management>",
   "discord-notifications-channel-id": "<channel-id-for-stream-announcements>",
+  "discord-logging-channel-id": "<channel-id-for-action-log>",
   "discord-token": "<discord-bot-token>,
   "discord-available-roles": [<list-of-roles-as-strings],
+  "discord-banned-file-ext": [<list-of-banned-extensions],
   "bot-user-name": "<bot username>",
   "bot-avatar-url": "<link to bot avatar image>",
   "target-game-ids": [
