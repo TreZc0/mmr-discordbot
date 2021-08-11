@@ -193,7 +193,7 @@ twitch.on('messageStreamStarted', (stream) => {
       "text": "Playing " + stream.game
     },
     "thumbnail": {
-      "url": "https://m.media-amazon.com/images/I/51Bq+i7aLdL._SX466_.jpg"
+      "url": stream.user_profile_image
     },
     "author": {
       "name": escapeDiscordSpecials(stream.name) + " is now live on Twitch!",

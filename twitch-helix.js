@@ -102,21 +102,22 @@ async function streamLoop () {
     }
     let res = data.data;
     for (let i = 0;i<res.length;i++) {
-      let stream = res[i];
-      if (typeof streams[stream["id"]]["url"] === 'undefined') {
+      let userElem = res[i];
+      if (typeof streams[userElem["id"]]["url"] === 'undefined') {
         if (startup === true) {
           game = config["target-game-name"]
           streamEmitter.emit('messageStreamStarted', {
-            "url": 'https://www.twitch.tv/' + stream["login"],
-            "name": stream["login"],
-            "title": streams[stream["id"]]["title"],
+            "url": 'https://www.twitch.tv/' + userElem["login"],
+            "name": userElem["login"],
+            "title": streams[userElem["id"]]["title"],
             "game": game,
+            "user_profile_image": userElem["profile_image_url"]
           });
         }
       }
-      streams[stream["id"]]["url"] = 'https://www.twitch.tv/' + stream["login"];
-      streams[stream["id"]]["display_name"] = stream["display_name"];
-      streams[stream["id"]]["login"] = stream["login"];
+      streams[userElem["id"]]["url"] = 'https://www.twitch.tv/' + userElem["login"];
+      streams[userElem["id"]]["display_name"] = userElem["display_name"];
+      streams[userElem["id"]]["login"] = userElem["login"];
     }
     return;
   }).catch((e) => {
