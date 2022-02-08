@@ -52,6 +52,7 @@ const bot = new Discord.Client({
   intents: botIntents,
   restTimeOffset: 150
 });
+let botSpamCheck = [];
 
 botIntents.add("GUILDS", "GUILD_MEMBERS", "GUILD_BANS", "GUILD_EMOJIS", "GUILD_INTEGRATIONS", "GUILD_WEBHOOKS", "GUILD_INVITES", "GUILD_VOICE_STATES", "GUILD_PRESENCES", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS", "GUILD_MESSAGE_TYPING", "DIRECT_MESSAGES", "DIRECT_MESSAGE_REACTIONS", "DIRECT_MESSAGE_TYPING");
 
@@ -251,7 +252,7 @@ function bannedAttachmentCheck(message) {
       user: author.username,
       channel: {name: message.channel.name, id: message.channel.id},
       offense: "Banned File Extension",
-      action: "Message Deletion",
+      action: "Message Deleted & User warned",
       messageObj: { id: message.id, content: message.content, att: attachmentCollection.map(val => val.name).join(", ")}
     }
     message.delete()    
@@ -289,6 +290,87 @@ bot.on('message', message => {
 
   if (forbiddenMessageDeleted)
     return;
+
+    if ((message.content.toLowerCase().includes("nitro for free") || message.content.toLowerCase().includes("free discord nitro") || message.content.toLowerCase().includes("disorde.gift")) && message.member.roles.cache.size < 2) {
+      message.member.ban({ days: 7, reason: "Malware Bot, auto banned by bot!" })
+          .then(() => {
+            console.log("Malware Spam Bot banned! Username: " + message.member.user.tag)
+            let actionObj = {
+              user: message.author.username,
+              channel: {name: message.channel.name, id: message.channel.id},
+              offense: "Discord Phishing Attempt with suspicious link",
+              action: "Message Deleted & User Banned",
+              messageObj: { id: message.id, content: message.content }
+            }
+        
+            _logModerationAction(actionObj);
+          })
+          .catch(error => console.log("Couldn't ban bot because of the following error: \n" + error));
+    }
+
+    if (message.member.roles.cache.size < 2 && (new RegExp('dis(?!cord)[0-9a-zA-Z]{1,}\.gift\/.', 'g').test(message.content.toLowerCase()) || new RegExp('dis(?!cord)[0-9a-zA-Z]{1,}app\.com\/', 'g').test(message.content.toLowerCase()))) {
+        message.member.ban({ days: 7, reason: "Malware Bot, auto banned by bot!" })
+        .then(() => {
+          console.log("Malware Spam Bot banned! Username: " + message.member.user.tag)
+          let actionObj = {
+            user: message.author.username,
+            channel: {name: message.channel.name, id: message.channel.id},
+            offense: "Discord Phishing Attempt with suspicious link",
+            action: "Message Deleted & User Banned",
+            messageObj: { id: message.id, content: message.content }
+          }
+      
+          _logModerationAction(actionObj);
+        })
+        .catch(error => console.log("Couldn't ban bot because of the following error: \n" + error));
+    }
+        
+  if (message.member && !message.member.permissions.has("MENTION_EVERYONE") && (message.content.includes("@everyone") || message.content.includes("@here"))) {
+      if (botSpamCheck.includes(message.member.user.tag)) {
+
+          message.delete();
+          message.member.ban({ days: 7, reason: "Spam Bot with mass pings, auto banned by bot!" })
+          .then(console.log("Spam Bot wit mass pings banned! Username: " + message.member.user.tag))
+          .catch(error => console.info("Couldn't ban bot because of the following error: \n" + error));
+          botSpamCheck.splice(botSpamCheck.indexOf(message.member.user.tag),1);
+
+          let actionObj = {
+            user: message.author.username,
+            channel: {name: message.channel.name, id: message.channel.id},
+            offense: "Repeated unauthorized Everyone/Here Ping",
+            action: "Message Deleted & User Banned",
+            messageObj: { id: message.id, content: message.content }
+          }
+      
+          _logModerationAction(actionObj);
+      }
+      else {
+              message.delete();
+              message.reply("Hey there. You have tried to ping everyone in this server. While disabled and thus without effect, we still do not appreciate the attempt. Repeated attempts to mass ping will be met with a ban.\nIn the event of important notifications or alerts that we need to be aware of, please contact staff.").then(disclaimer => {
+                  setTimeout(() =>{
+                      disclaimer.delete();
+                  },15000);
+              })
+              botSpamCheck.push(message.member.user.tag);
+
+              let actionObj = {
+                user: message.author.username,
+                channel: {name: message.channel.name, id: message.channel.id},
+                offense: "Unauthorized Everyone/Here Ping",
+                action: "Message Deleted & Warning issued",
+                messageObj: { id: message.id, content: message.content }
+              }
+          
+              _logModerationAction(actionObj);
+
+              setTimeout(() => {
+                  if (botSpamCheck.includes(message.member.user.tag))
+                      botSpamCheck.splice(botSpamCheck.indexOf(message.member.user.tag),1);
+              },45000);
+      
+      }
+  }
+
 
   if (message.channel.id == roleHandlingChannel)
     roleManagement(message);
@@ -335,7 +417,7 @@ function _logModerationAction(actionObj) {
     }
   };
 
-  if (actionObj.messageObj.att.length > 0) {
+  if (("att" in actionObj.messageObj) && actionObj.messageObj.att.length > 0) {
     embed.fields.push({
       "name": "Message Attachment(s)",
       "value": actionObj.messageObj.att,
