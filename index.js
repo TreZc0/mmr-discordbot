@@ -461,7 +461,9 @@ async function wipeChannelAndReturnMessages(textChannel) {
 
 //Sys
 function commitState() {
-  jsonfile.writeFile(stateFile, state);
+  jsonfile.writeFile(stateFile, state, { spaces: 2 }, function (err) {
+    if (err) console.error(err)
+  });
 }
 
 function escapeDiscordSpecials(inputString) {
