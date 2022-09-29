@@ -10,6 +10,11 @@ let startup = true;
 let streams = {};
 let game;
 let tags = config["target-stream-tags"];
+let titleWordlist = config["target-stream-title-wordlist"];
+let detectionMode = config["target-stream-detection-type"];
+
+if (detectionMode == undefined)
+  detectionMode = "tags";
 
 async function getOauthToken() {
   if (Date.now() < config["twitch-access-token-expires-At"] && config["twitch-access-token"].length > 0) {
@@ -74,12 +79,21 @@ async function streamLoop () {
     let user_ids = [ ];
     for (let i = 0;i<res.length;i++) {
       let stream = res[i];
-      if (stream.tag_ids) {
-        var speedrun = tags.find(tag => {
-          if (stream.tag_ids.includes(tag))
-            return true;
-          return false;
-        });
+      let speedrun = false;
+      if (detectionMode == "tags") { //tags mode
+        if (stream.tag_ids) {
+          speedrun = tags.find(tag => {
+            if (stream.tag_ids.includes(tag))
+              return true;
+            return false;
+          });
+        } 
+      } else { //title mode
+          speedrun = titleWordlist.some(val => {
+            let regex = new RegExp('(^|\\s|!|-|\\.|\\?|,)' + val.toLowerCase() + '($|\\s|!|-|\\.|\\?|,)', 'g')
+
+            return regex.test(stream["title"].toLowerCase());
+          });
       }
       if (speedrun) {
         user_ids.push(stream["user_id"]);
