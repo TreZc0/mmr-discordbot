@@ -14,6 +14,10 @@
   "target-stream-tags": [
      <list-of-twitch-api-tag-ids>
   ],
+  "target-stream-title-wordlist": [
+    << comma-separated list of words or phrases being tracked in twitch titles >>
+  ],
+  "target-stream-detection-type": "title" or "tags",
   "target-game-name": "<game-name-to-show-in-embed>",
   "twitch-client-id": "<twitch-client-id>",
   "twitch-client-secret": "<twitch-client-secret",
