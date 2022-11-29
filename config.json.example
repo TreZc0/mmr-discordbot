@@ -4,7 +4,7 @@
   "discord-notifications-channel-id": "<channel-id-for-stream-announcements>",
   "discord-logging-channel-id": "<channel-id-for-action-log>",
   "discord-token": "<discord-bot-token>,
-  "discord-available-roles": [<list-of-roles-as-strings],
+  "discord-available-roles": [<list-of-role-objects ({ name: "", description: ""})],
   "discord-banned-file-ext": [<list-of-banned-extensions],
   "bot-user-name": "<bot username>",
   "bot-avatar-url": "<link to bot avatar image>",

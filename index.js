@@ -74,7 +74,7 @@ bot.on('messageReactionAdd', (reaction, user) => {
 
     let roleIndex = Object.keys(numToDiscordEmojis).find(key => numToDiscordEmojis[key] === reaction.emoji.name);
 
-    let roleToAdd = bot.guilds.cache.get(reaction.message.guild.id).roles.cache.find(role => role.name === roles[roleIndex]);
+    let roleToAdd = bot.guilds.cache.get(reaction.message.guild.id).roles.cache.find(role => role.name === roles[roleIndex].name);
     if (roleToAdd) {
 
       if (!memberObj.roles.cache.has(roleToAdd)) {
@@ -95,7 +95,7 @@ bot.on('messageReactionRemove', (reaction, user) => {
 
     let roleIndex = Object.keys(numToDiscordEmojis).find(key => numToDiscordEmojis[key] === reaction.emoji.name);
 
-    let roleToRemove = bot.guilds.cache.get(reaction.message.guild.id).roles.cache.find(role => role.name === roles[roleIndex]);
+    let roleToRemove = bot.guilds.cache.get(reaction.message.guild.id).roles.cache.find(role => role.name === roles[roleIndex].name);
     if (roleToRemove) {
 
       memberObj.fetch(true).then(updatedMemberObj => {
@@ -136,8 +136,8 @@ async function roleManagement(message) {
         Object.keys(roles).forEach(roleIndex => {
           let fieldObject = {};
 
-          fieldObject.name = roles[roleIndex];
-          fieldObject.value = numToDiscordEmojis[roleIndex];
+          fieldObject.name = roles[roleIndex].name ;
+          fieldObject.value = `${numToDiscordEmojis[roleIndex]} (${roles[roleIndex].description})`;
           embed.fields.push(fieldObject);
         });
 
